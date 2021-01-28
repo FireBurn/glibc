@@ -26,6 +26,7 @@
 #include <lowlevellock-futex.h>
 #include <libc-diag.h>
 
+#define NSEC 1000000000
 /* This file defines futex operations used internally in glibc.  A futex
    consists of the so-called futex word in userspace, which is of type
    unsigned int and represents an application-specific condition, and kernel
@@ -177,6 +178,44 @@ futex_wait_simple (unsigned int *futex_word, unsigned int expected,
   ignore_value (futex_wait (futex_word, expected, private));
 }
 
+
+
+  int err;
+
+  if (reltime) {
+    __clock_gettime (CLOCK_MONOTONIC, &now);
+    abstime.tv_sec = reltime->tv_sec + now.tv_sec;
+    abstime.tv_nsec = reltime->tv_nsec + now.tv_nsec;
+      if (abstime.tv_nsec >= NSEC) {
+        abstime.tv_sec++;
+        abstime.tv_nsec -= NSEC;
+      }
+    err = lll_futex_timed_wait (futex_word, expected, &abstime, private);
+  } else {
+    err = lll_futex_wait (futex_word, expected, private);
+  }
+
+
+  struct timespec now, abstime;
+  int err;
+
+
+
+
+  if (reltime) {
+    __clock_gettime (CLOCK_MONOTONIC, &now);
+    abstime.tv_nsec = reltime->tv_nsec + now.tv_nsec;
+    abstime.tv_sec = reltime->tv_sec + now.tv_sec;
+      if (abstime.tv_nsec >= NSEC) {
+        abstime.tv_sec++;
+        abstime.tv_nsec -= NSEC;
+      }
+    err = lll_futex_timed_wait (futex_word, expected, &abstime, private);
+  } else {
+    err = lll_futex_wait (futex_word, expected, private);
+  }
+
+
 /* Check whether the specified clockid is supported by
    futex_abstimed_wait and futex_abstimed_wait_cancelable.  */
 static __always_inline int
@@ -184,6 +223,7 @@ futex_abstimed_supported_clockid (clockid_t clockid)
 {
   return lll_futex_supported_clockid (clockid);
 }
+
 
 /* Atomically wrt other futex operations on the same futex, this unblocks the
    specified number of processes, or all processes blocked on this futex if

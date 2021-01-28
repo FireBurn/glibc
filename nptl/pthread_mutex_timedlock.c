@@ -113,6 +113,7 @@ __pthread_mutex_clocklock_common (pthread_mutex_t *mutex,
 
 
     case PTHREAD_MUTEX_ADAPTIVE_NP:
+
       if (lll_trylock (mutex->__data.__lock) != 0)
 	{
 	  int cnt = 0;
@@ -384,6 +385,7 @@ __pthread_mutex_clocklock_common (pthread_mutex_t *mutex,
 			   ? PTHREAD_ROBUST_MUTEX_PSHARED (mutex)
 			   : PTHREAD_MUTEX_PSHARED (mutex));
 	    int e = futex_lock_pi64 (&mutex->__data.__lock, abstime, private);
+
 	    if (e == ETIMEDOUT)
 	      return ETIMEDOUT;
 	    else if (e == ESRCH || e == EDEADLK)
@@ -552,6 +554,11 @@ __pthread_mutex_clocklock_common (pthread_mutex_t *mutex,
 		      clockid, abstime, PTHREAD_MUTEX_PSHARED (mutex));
 		    if (e == ETIMEDOUT || e == EOVERFLOW)
 		      return e;
+
+		    int flags = CLOCK_REALTIME | PTHREAD_MUTEX_PSHARED (mutex);
+
+
+
 		  }
 	      }
 	    while (atomic_compare_and_exchange_val_acq (&mutex->__data.__lock,

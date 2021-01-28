@@ -298,7 +298,7 @@ __pthread_mutex_trylock (pthread_mutex_t *mutex)
 			   ? PTHREAD_ROBUST_MUTEX_PSHARED (mutex)
 			   : PTHREAD_MUTEX_PSHARED (mutex));
 	    int e = INTERNAL_SYSCALL_CALL (futex, &mutex->__data.__lock,
-					   __lll_private_flag (FUTEX_TRYLOCK_PI,
+					   __lll_private_flag_old (FUTEX_TRYLOCK_PI,
 							       private), 0, 0);
 
 	    if (INTERNAL_SYSCALL_ERROR_P (e)

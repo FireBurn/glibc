@@ -16,6 +16,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
+#include <stdio.h>
 #include "thrd_priv.h"
 
 int
@@ -23,7 +24,7 @@ thrd_create (thrd_t *thr, thrd_start_t func, void *arg)
 {
   _Static_assert (sizeof (thrd_t) == sizeof (pthread_t),
 		  "sizeof (thrd_t) != sizeof (pthread_t)");
-
+  puts("hacked");
   int err_code = __pthread_create (thr, ATTR_C11_THREAD,
 				   (void* (*) (void*))func, arg);
   return thrd_err_map (err_code);

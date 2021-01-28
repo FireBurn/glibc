@@ -32,6 +32,12 @@ cleanup (void *arg)
   atomic_compare_exchange_weak_acquire (&arg, &self, NULL);
 }
 
+
+      int flags = (clockid == CLOCK_REALTIME ? FUTEX_CLOCK_REALTIME : 0) | LLL_SHARED;
+
+
+
+
 int
 __pthread_clockjoin_ex (pthread_t threadid, void **thread_return,
                         clockid_t clockid,

@@ -351,3 +351,6 @@
 #define __NR_waitid 247
 #define __NR_write 1
 #define __NR_writev 20
+
+#define __NR_futex_wait 442
+#define __NR_futex_wake 443

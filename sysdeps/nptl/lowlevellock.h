@@ -20,7 +20,7 @@
 #define _LOWLEVELLOCK_H	1
 
 #include <atomic.h>
-#include <lowlevellock-futex.h>
+#include <lowlevellock-futex2.h>
 #include <time.h>
 
 /* Low-level locks use a combination of atomic operations (to acquire and
